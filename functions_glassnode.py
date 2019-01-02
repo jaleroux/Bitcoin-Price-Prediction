@@ -30,7 +30,7 @@ from keras.layers import Dense
 from keras.layers import LSTM
 
 def get_data(hours_limit, api_params, years_of_data):
-    
+    # function for making api call to crypto-compare
     # api call amount number
     hours_of_data = years_of_data * (24*365)
     num_api_calls = ceil(hours_of_data / hours_limit) # amount of calls to api
@@ -75,15 +75,9 @@ def get_data(hours_limit, api_params, years_of_data):
     
     return results_df
 
-# simple train test split function for time-series (preserve ordeR)
-#def difference(df, lag):
-#    diff_df = (df - df.shift(lag)).dropna()
-#    diff_df = diff_df.dropna()
-#    return diff_df
-
 # don't use one hot encoding -> use mean encoding for catergorical
 def mean_encoding(df, cat_feature, target):
-    ''' mean price for categorical group '''
+    # mean price for categorical group
     return dict(df.groupby(cat_feature)[target].mean())
 
 
@@ -91,6 +85,9 @@ def feature_creation(target_df, target_col_name,
                      price_features_df, feature_col_names, 
                      time_features_df, 
                      lag_start, lag_end, status='build', test_split=0.3):
+    # function that creates feature matrix of lagged observations (from lag_start to lag_end)
+    # and time-period price encoded features
+    
     # lagset
     lags_set = range(lag_start, lag_end + 1)
     ## lags of prices
@@ -137,7 +134,7 @@ def feature_creation(target_df, target_col_name,
         time_features_df['day_average'] = list(map(average_day_dict.get, time_features_df.day))
         time_features_df['month_average'] = list(map(average_month_dict.get, time_features_df.month))
         
-    if status == 'live':
+    if status == 'live': # live scoring use saved dicts from training
 
         average_hour_dict = pickle.load(open("average_hour.pkl","rb")) 
         average_day_dict = pickle.load(open("average_day.pkl","rb")) 
@@ -172,13 +169,13 @@ def train_test_split(X,Y, test_split):
     return X_train, X_test, Y_train, Y_test
 
 def model_results(model, X_train, Y_train, X_test, Y_test,cv_type):
-    
+    # function that fits model (from sklearn) 
     # fit model
     model.fit(X_train, Y_train)
 
     # predict 
     prediction = model.predict(X_test)
-
+    # cross-validation using time-series split setting
     cv_f1 = cross_val_score(model, X_train, Y_train, 
                              cv=cv_type, 
                              scoring="f1")
@@ -191,8 +188,8 @@ def model_results(model, X_train, Y_train, X_test, Y_test,cv_type):
 
 def keras_lstm(X_array_train, Y_vec_train, X_array_test, Y_vec_test,
                batch_size, epoch_num, neurons):
-    # function that intialises the LSTM network for a cliassification problem, 
-    # and trains the lstm over a number of epocs
+    # function that intialises the LSTM network (from keras) for a cliassification problem, 
+    # and trains the lstm over a number of epochs
     # we do our own epoch training loop so as to reset the internal state of the 
     # lstm at the beginning of each full, new training run
     X_array_train_reshape = X_array_train.reshape(X_array_train.shape[0], 1, X_array_train.shape[1])
@@ -210,5 +207,5 @@ def keras_lstm(X_array_train, Y_vec_train, X_array_test, Y_vec_test,
     train_f1 = f1_score(Y_vec_train, model.predict_classes(X_array_train_reshape, batch_size))
     
     X_array_test = X_array_test.reshape(X_array_test.shape[0], 1, X_array_test.shape[1])
-    test_f1 = f1_score(Y_vec_test, model.predict_classes(X_array_test, batch_size)) # training set     
+    test_f1 = f1_score(Y_vec_test, model.predict_classes(X_array_test, batch_size)) # testing set     
     return train_f1 , test_f1, model

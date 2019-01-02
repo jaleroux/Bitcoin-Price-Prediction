@@ -66,7 +66,7 @@ plt.show()
 
 # basic feature engineering
 # 1) differencing
-# split into different variables (dependent, independent)
+# split into different variables (dependent, independent(price/vol features and time features))
 Y = data[(TARGET)] 
 X_pricevol = data[PRICEVOL_COLUMNS]
 X_time = data[['date_time', TARGET]]
@@ -87,8 +87,7 @@ X_time = X_time[X_time > X_pricevol_diff.index.min()] # cut-off 1st obs from rem
 X_features, Y_diff = glass.feature_creation(Y_diff, TARGET,
                                             X_pricevol_diff, PRICEVOL_COLUMNS,
                                             X_time, 
-                                            1, 1, TEST_SPLIT,
-                                            status='build')
+                                            1, 1, 'build', TEST_SPLIT)
 
 # 3) Create Binary Target Variable (on price direction)
 Y_cat = pd.Series([1 if obs > 1 else 0 for obs in Y_diff], index=Y_diff.index)
@@ -178,3 +177,21 @@ with open("model_lstm.json", "w") as json_file:
 # serialize weights to HDF5
 model3.save_weights("model_lstm.h5")
 print("Saved lstm model to disk")
+
+
+
+ 
+ 
+
+
+
+
+#target_df = Y_diff
+#target_col_name =TARGET
+#price_features_df =X_pricevol_diff
+#feature_col_names =PRICEVOL_COLUMNS
+#time_features_df = X_time
+#lag_start =1
+#lag_end =12
+#status='build' 
+#test_split=TEST_SPLIT
