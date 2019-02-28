@@ -37,7 +37,6 @@ The f1-score was selected to asses performance. This strikes a balance between p
 |---------------------|:----------------:|:-----------------:|
 |Persist              |         0.41     |       0.41        |
 |Logistic Regression  |         0.47     |       0.45        |
-|Ridge Regression|    |        0.47      |       0.45        |
 |LSTM                 |         0.55     |          0.54     |
 
 1. Logistic Regression is a go-to for classification models and that is why I've begun with it. The main drawbacks are potential overfitting and not being able to capture non-linearities that could exists between features. 5-fold time-series cross validation was used on the training set. 
