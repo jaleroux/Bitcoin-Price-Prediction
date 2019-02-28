@@ -1,7 +1,7 @@
 # Bitcoin Hourly Price Movement Prediction
 A short foray into world of Bitcoin price predictions.
 
-Here is an overview of my solution to the Glassnode Crypto Challenge.
+Here is an overview of my work.
 
 The solution contains a script file that executes the stages in data preparation, some feature engineering and finally a little model head-to-head. Additionally, there is the application/deployment of the model which is a basic api output of the current price-direction prediction. This is in the /glassnode_demo folder also containerised in docker hub. 
 
