@@ -1,5 +1,5 @@
-# glassnode_ds_challenge
-Data Scientist Challenge For Glassnode
+# Bitcoin Hourly Price Movement Prediction
+A short foray into world of Bitcoin price predictions.
 
 Here is an overview of my solution to the Glassnode Crypto Challenge.
 
